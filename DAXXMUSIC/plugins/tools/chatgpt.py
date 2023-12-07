@@ -11,7 +11,7 @@ from random import choice
 from bardapi import Bard
 from datetime import datetime
 import logging
-
+from DAXXMUSIC import app
 
 ##### Bing
 @app.on_message(
