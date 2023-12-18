@@ -1,5 +1,41 @@
 from pyrogram import Client, filters
+from pyrogram.types import Message
 from DAXXMUSIC import app
+
+@app.on_message(filters.command("groupinfo", prefixes="/"))
+async def get_group_status(_, message: Message):
+    if len(message.command) != 2:
+        await message.reply("Please provide a group username. Example: `/groupinfo YourGroupUsername`")
+        return
+    
+    group_username = message.command[1]
+    
+    try:
+        group = await app.get_chat(group_username)
+    except Exception as e:
+        await message.reply(f"Error: {e}")
+        return
+    
+    total_members = await app.get_chat_members_count(group.id)
+    group_description = group.description
+    premium_acc = banned = deleted_acc = bot = 0  # You should replace these variables with actual counts.
+
+    response_text = (
+        f"➖➖➖➖➖➖➖\n"
+        f"➲ GROUP NAME : {group.title} ✅\n"
+        f"➲ GROUP ID : {group.id}\n"
+        f"➲ TOTAL MEMBERS : {total_members}\n"
+        f"➲ DESCRIPTION : {group_description or 'N/A'}\n"
+        f"➲ USERNAME : @{group_username}\n"
+       
+        f"➖➖➖➖➖➖➖"
+    )
+    
+    await message.reply(response_text)
+
+
+
+
 
 
 # Command handler to get group status
@@ -40,29 +76,3 @@ def group_status(client, message):
 
 ####
 
-@app.on_message(filters.command("groupinfo") & filters.group)
-def group_info_command(client, message):
-    try:
-        # Group Information
-        group_name = message.chat.title
-        group_id = message.chat.id
-        total_members = client.get_chat_members_count(chat_id=group_id)
-
-        # Get Chat Information for Description and Username
-        chat_info = client.get_chat(chat_id=group_id)
-
-        group_description = chat_info.description if chat_info.description else "No description available"
-        group_username = chat_info.username if chat_info.username else "No username set"
-
-        response_text = (
-            f"Gʀᴏᴜᴘ Nᴀᴍᴇ: {group_name}\n\n"
-            f"Gʀᴏᴜᴘ ID: {group_id}\n\n"
-            f"Tᴏᴛᴀʟ Mᴇᴍʙᴇʀs: {total_members}\n\n"
-            f"Dᴇsᴄʀɪᴘᴛɪᴏɴ: {group_description}\n\n"
-            f"Usᴇʀɴᴀᴍᴇ: @{group_username}"
-        )
-
-        message.reply_text(response_text)
-
-    except Exception as e:
-        message.reply_text(f"An error occurred: {str(e)}")

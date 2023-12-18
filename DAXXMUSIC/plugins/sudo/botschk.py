@@ -1,4 +1,6 @@
 import asyncio
+import config
+import random
 from pyrogram import filters
 from DAXXMUSIC import app 
 from DAXXMUSIC.core.userbot import Client
